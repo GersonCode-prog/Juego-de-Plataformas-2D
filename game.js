@@ -494,17 +494,18 @@ class MenuSystem {
     }
     
     static handleMobileTouch(x, y) {
-        console.log(`Menu Touch: x=${x}, y=${y}, gameState=${gameState}`);
+        // console.log(`Menu Touch: x=${x}, y=${y}, gameState=${gameState}`);
         
         if (gameState === 'MENU') {
             // Botón jugar en menú principal
             if (x >= canvas.width/2 - 100 && x <= canvas.width/2 + 100 &&
                 y >= 280 && y <= 340) {
-                console.log('Menu: Going to character select');
+                // console.log('Menu: Going to character select');
                 gameState = 'CHARACTER_SELECT';
             }
         } else if (gameState === 'CHARACTER_SELECT') {
             // Detectar toque en personajes
+            // console.log(`Character Select Touch: x=${x}, y=${y}`);
             let charX = 80;
             let charY = 140;
             const spacing = 140;
@@ -514,6 +515,7 @@ class MenuSystem {
             Object.keys(CHARACTERS).forEach((key) => {
                 if (x >= charX - 10 && x <= charX + 110 && 
                     y >= charY - 50 && y <= charY + 110) {
+                    // console.log(`Selected character: ${key}`);
                     selectedCharacter = key;
                     MenuSystem.selectOrBuyCharacter();
                     return;
@@ -528,27 +530,40 @@ class MenuSystem {
                 }
             });
             
-            // Botón jugar
+            // Botón jugar (coordenadas actualizadas)
             if (x >= canvas.width/2 - 60 && x <= canvas.width/2 + 60 &&
                 y >= canvas.height - 100 && y <= canvas.height - 70 &&
                 CHARACTERS[selectedCharacter].unlocked) {
+                // console.log('Going to level select');
                 gameState = 'LEVEL_SELECT';
             }
         } else if (gameState === 'LEVEL_SELECT') {
             // Detectar toque en niveles
-            let y = 140;
+            // console.log(`Level Select Touch: x=${x}, y=${y}`);
+            let levelY = 160; // Posición Y inicial de los niveles
+            let levelSelected = false;
+            
             Object.keys(LEVELS).forEach((key, index) => {
+                const levelTop = levelY - 30;
+                const levelBottom = levelY + 30;
+                
+                // console.log(`Level ${key}: y range ${levelTop} to ${levelBottom}`);
+                
                 if (x >= 50 && x <= canvas.width - 50 && 
-                    y >= y - 25 && y <= y + 25) {
+                    y >= levelTop && y <= levelBottom) {
+                    // console.log(`Selected Level ${key}`);
                     currentLevel = parseInt(key);
+                    levelSelected = true;
                     return;
                 }
-                y += 60;
+                levelY += 80; // Espaciado entre niveles
             });
             
-            // Botón jugar
-            if (x >= canvas.width/2 - 60 && x <= canvas.width/2 + 60 &&
-                y >= canvas.height - 100 && y <= canvas.height - 70) {
+            // Botón jugar (solo si se ha seleccionado un nivel)
+            if (!levelSelected && 
+                x >= canvas.width/2 - 100 && x <= canvas.width/2 + 100 &&
+                y >= canvas.height - 80 && y <= canvas.height - 20) {
+                // console.log('Starting game!');
                 Game.startGame();
             }
         }
@@ -627,11 +642,23 @@ class MenuSystem {
             y += 80;
         });
         
+        // Botón JUGAR (solo visible en móvil o siempre)
+        ctx.fillStyle = '#4ecca3';
+        ctx.fillRect(canvas.width/2 - 100, canvas.height - 80, 200, 60);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 20px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillText('JUGAR', canvas.width/2, canvas.height - 45);
+        
         // Instrucciones
         ctx.fillStyle = '#fff';
         ctx.font = '14px Courier New';
         ctx.textAlign = 'center';
-        ctx.fillText('↑↓ para cambiar, ENTER para jugar, ESC para volver', canvas.width/2, canvas.height - 30);
+        if (isMobile) {
+            ctx.fillText('Toca nivel para seleccionar, JUGAR para empezar', canvas.width/2, canvas.height - 15);
+        } else {
+            ctx.fillText('↑↓ para cambiar, ENTER para jugar, ESC para volver', canvas.width/2, canvas.height - 15);
+        }
     }
 }
 
@@ -1546,13 +1573,13 @@ class Game {
         const canvasHeight = canvas.height;
         
         // Debug: mostrar coordenadas del toque (solo para pruebas)
-        console.log(`Touch: x=${x}, y=${y}, canvas=${canvasWidth}x${canvasHeight}`);
+        // console.log(`Touch: x=${x}, y=${y}, canvas=${canvasWidth}x${canvasHeight}`);
         
         // Área izquierda para movimiento (30% izquierda del canvas)
         if (x < canvasWidth * 0.4) {
             // Izquierda (primera mitad del área izquierda)
             if (x < canvasWidth * 0.2) {
-                console.log('Moving LEFT');
+                // console.log('Moving LEFT');
                 keys['a'] = true;
                 keys['arrowleft'] = true;
                 setTimeout(() => { 
@@ -1562,7 +1589,7 @@ class Game {
             }
             // Derecha (segunda mitad del área izquierda)
             else {
-                console.log('Moving RIGHT');
+                // console.log('Moving RIGHT');
                 keys['d'] = true;
                 keys['arrowright'] = true;
                 setTimeout(() => { 
@@ -1573,7 +1600,7 @@ class Game {
         }
         // Área derecha para salto (60% derecha del canvas)
         else if (x > canvasWidth * 0.6) {
-            console.log('JUMPING');
+            // console.log('JUMPING');
             if (player) {
                 player.jump();
             }
