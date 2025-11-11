@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Juego de Plataformas 2D - Tile Based Adventure</title>
+    <meta name="description" content="Un emocionante juego de plataformas 2D con gráficos pixel art y múltiples personajes">
+    <meta name="keywords" content="juego, plataformas, 2D, pixel art, aventura, móvil, táctil">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <header>
+            <h1>Tile-Based Adventure</h1>
+            <p>¡Recoge todas las monedas y evita a los enemigos!</p>
+        </header>
+        
+        <main>
+            <canvas id="gameCanvas" width="800" height="600" aria-label="Área de juego principal"></canvas>
+            
+            <div id="ui">
+                <div id="score" aria-live="polite">Puntos: 0</div>
+                <div id="lives" aria-live="polite">Vidas: ❤️❤️❤️</div>
+            </div>
+            
+            <div id="controls">
+                <strong>Controles:</strong> 
+                <span class="desktop-controls">⬅️ A | D ➡️ | ESPACIO 🚀 Saltar</span>
+                <span class="mobile-controls">📱 Toca pantalla: Izq/Der mover | Der saltar</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Game Over -->
+    <div id="gameOver" role="dialog" aria-labelledby="gameOverTitle" aria-describedby="finalScore">
+        <h2 id="gameOverTitle">¡Juego Terminado!</h2>
+        <p id="finalScore" aria-live="assertive"></p>
+        <button id="restartBtn" type="button">🔄 Reiniciar Juego</button>
+    </div>
+
+    <!-- Cargar script del juego -->
+    <script src="game.js"></script>
+</body>
+</html>

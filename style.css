@@ -1,0 +1,373 @@
+/* =====================================
+   JUEGO DE PLATAFORMAS 2D - ESTILOS
+   ===================================== */
+
+/* Reset y configuración base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Courier New', monospace;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Contenedor principal del juego */
+#gameContainer {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Header del juego */
+header {
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2.5em;
+    color: #4ecca3;
+    text-shadow: 0 0 15px rgba(78, 204, 163, 0.6);
+    margin-bottom: 10px;
+    animation: titlePulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes titlePulse {
+    from {
+        text-shadow: 0 0 15px rgba(78, 204, 163, 0.6);
+    }
+    to {
+        text-shadow: 0 0 25px rgba(78, 204, 163, 0.9), 0 0 35px rgba(78, 204, 163, 0.6);
+    }
+}
+
+header p {
+    font-size: 1.1em;
+    color: #aaa;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+/* Canvas del juego */
+#gameCanvas {
+    border: 4px solid #0f3460;
+    box-shadow: 
+        0 0 30px rgba(15, 52, 96, 0.5),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border-radius: 8px;
+    background: #0a0a15;
+}
+
+/* Interfaz de usuario */
+#ui {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    padding: 0 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px 20px;
+    backdrop-filter: blur(5px);
+}
+
+#score, #lives {
+    font-size: 20px;
+    color: #e94560;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+}
+
+#score {
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+#lives {
+    font-size: 24px;
+    letter-spacing: 3px;
+}
+
+/* Controles */
+#controls {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #aaa;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#controls:hover {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* Mostrar controles según dispositivo */
+.mobile-controls {
+    display: none;
+}
+
+@media (max-width: 768px) and (pointer: coarse) {
+    .desktop-controls {
+        display: none;
+    }
+    
+    .mobile-controls {
+        display: inline;
+    }
+}
+
+/* Pantalla de Game Over */
+#gameOver {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 40px;
+    border-radius: 15px;
+    display: none;
+    text-align: center;
+    border: 3px solid #e94560;
+    box-shadow: 
+        0 0 50px rgba(233, 69, 96, 0.5),
+        inset 0 0 20px rgba(233, 69, 96, 0.1);
+    backdrop-filter: blur(10px);
+    min-width: 350px;
+}
+
+#gameOver h2 {
+    color: #e94560;
+    margin-bottom: 20px;
+    font-size: 32px;
+    text-shadow: 0 0 10px rgba(233, 69, 96, 0.8);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(233, 69, 96, 0.8);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(233, 69, 96, 1), 0 0 30px rgba(233, 69, 96, 0.8);
+    }
+}
+
+#finalScore {
+    font-size: 18px;
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Botón de reiniciar */
+#restartBtn {
+    background: linear-gradient(45deg, #e94560, #ff5577);
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 25px;
+    font-family: 'Courier New', monospace;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#restartBtn:hover {
+    background: linear-gradient(45deg, #ff5577, #ff6688);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(233, 69, 96, 0.6);
+}
+
+#restartBtn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(233, 69, 96, 0.4);
+}
+
+/* Efectos adicionales */
+#gameCanvas:hover {
+    box-shadow: 
+        0 0 40px rgba(15, 52, 96, 0.7),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Animación de entrada para la UI */
+#ui, #controls {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design para pantallas más pequeñas */
+@media (max-width: 900px) {
+    #gameCanvas {
+        width: 90vw;
+        height: auto;
+        max-width: 800px;
+    }
+    
+    #ui {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    #gameOver {
+        padding: 30px 20px;
+        margin: 0 20px;
+        min-width: auto;
+        max-width: 90vw;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        overflow: auto;
+        min-height: 100vh;
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    #gameContainer {
+        padding: 10px;
+    }
+
+    #gameCanvas {
+        width: 95vw;
+        max-width: 380px;
+        border-width: 2px;
+    }
+    
+    #gameOver h2 {
+        font-size: 24px;
+    }
+    
+    #restartBtn {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+    
+    #score, #lives {
+        font-size: 16px;
+    }
+
+    #controls {
+        font-size: 12px;
+        padding: 8px 15px;
+    }
+}
+
+/* Controles táctiles para móviles */
+@media (max-width: 768px) and (pointer: coarse) {
+    #gameCanvas {
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    /* Indicadores de zona táctil en el canvas */
+    #gameCanvas::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        background: 
+            linear-gradient(to right, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(255, 255, 255, 0.05) 30%, 
+                transparent 30%, 
+                transparent 70%, 
+                rgba(255, 255, 255, 0.05) 70%, 
+                rgba(255, 255, 255, 0.05) 100%);
+        z-index: 1;
+        border-radius: 4px;
+    }
+
+    /* Instrucciones táctiles */
+    #controls::after {
+        content: ' 📱 Toca: Izq/Der para mover, Derecha para saltar';
+        display: block;
+        margin-top: 5px;
+        color: #4ecca3;
+        font-size: 11px;
+    }
+}
+
+/* Estilos específicos para menús en móvil */
+@media (max-width: 768px) {
+    .menu-button {
+        min-height: 44px !important;
+        padding: 12px 20px !important;
+        font-size: 16px !important;
+        margin: 8px 0 !important;
+        touch-action: manipulation;
+    }
+
+    .character-card {
+        min-width: 120px !important;
+        min-height: 140px !important;
+        margin: 10px !important;
+        touch-action: manipulation;
+    }
+
+    .level-button {
+        min-height: 50px !important;
+        padding: 15px !important;
+        margin: 10px 0 !important;
+        touch-action: manipulation;
+    }
+}
+
+/* Animación para feedback táctil */
+@media (max-width: 768px) {
+    #gameCanvas:active {
+        opacity: 0.9;
+        transition: opacity 0.1s ease;
+    }
+
+    .menu-button:active,
+    .character-card:active,
+    .level-button:active,
+    #restartBtn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+}
