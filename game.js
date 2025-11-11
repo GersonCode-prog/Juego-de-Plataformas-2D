@@ -166,7 +166,7 @@ let particles = [];
 let currentLevel = 1;
 let selectedCharacter = 'KNIGHT';
 let gameState = 'MENU'; // Comenzar con menú principal
-let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window);
 
 // Mapa del nivel actual
 let levelMap = [];
@@ -494,10 +494,13 @@ class MenuSystem {
     }
     
     static handleMobileTouch(x, y) {
+        console.log(`Menu Touch: x=${x}, y=${y}, gameState=${gameState}`);
+        
         if (gameState === 'MENU') {
             // Botón jugar en menú principal
             if (x >= canvas.width/2 - 100 && x <= canvas.width/2 + 100 &&
                 y >= 280 && y <= 340) {
+                console.log('Menu: Going to character select');
                 gameState = 'CHARACTER_SELECT';
             }
         } else if (gameState === 'CHARACTER_SELECT') {
@@ -578,7 +581,11 @@ class MenuSystem {
         // Instrucciones
         ctx.fillStyle = '#fff';
         ctx.font = '14px Courier New';
-        ctx.fillText('Presiona ENTER para comenzar', canvas.width/2, 380);
+        if (isMobile) {
+            ctx.fillText('Toca JUGAR para comenzar', canvas.width/2, 380);
+        } else {
+            ctx.fillText('Presiona ENTER para comenzar', canvas.width/2, 380);
+        }
     }
     
     static drawLevelSelect() {
@@ -1458,8 +1465,12 @@ class Game {
             e.preventDefault();
             const touch = e.touches[0];
             const rect = canvas.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
+            
+            // Calcular coordenadas escaladas
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (touch.clientX - rect.left) * scaleX;
+            const y = (touch.clientY - rect.top) * scaleY;
             
             if (gameState === 'CHARACTER_SELECT' || gameState === 'MENU' || gameState === 'LEVEL_SELECT') {
                 MenuSystem.handleMobileTouch(x, y);
@@ -1470,10 +1481,29 @@ class Game {
 
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            
+            // Calcular coordenadas escaladas
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (touch.clientX - rect.left) * scaleX;
+            const y = (touch.clientY - rect.top) * scaleY;
+            
+            if (gameState === 'PLAYING') {
+                Game.handleGameTouch(x, y);
+            }
         });
 
         canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
+            // Liberar todas las teclas cuando se levanta el dedo
+            if (gameState === 'PLAYING') {
+                keys['a'] = false;
+                keys['d'] = false;
+                keys['arrowleft'] = false;
+                keys['arrowright'] = false;
+            }
         });
     }
 
@@ -1515,22 +1545,38 @@ class Game {
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         
-        // Área izquierda para movimiento
-        if (x < canvasWidth * 0.3) {
-            // Izquierda
-            if (x < canvasWidth * 0.15) {
+        // Debug: mostrar coordenadas del toque (solo para pruebas)
+        console.log(`Touch: x=${x}, y=${y}, canvas=${canvasWidth}x${canvasHeight}`);
+        
+        // Área izquierda para movimiento (30% izquierda del canvas)
+        if (x < canvasWidth * 0.4) {
+            // Izquierda (primera mitad del área izquierda)
+            if (x < canvasWidth * 0.2) {
+                console.log('Moving LEFT');
+                keys['a'] = true;
                 keys['arrowleft'] = true;
-                setTimeout(() => { keys['arrowleft'] = false; }, 100);
+                setTimeout(() => { 
+                    keys['a'] = false; 
+                    keys['arrowleft'] = false; 
+                }, 150);
             }
-            // Derecha
+            // Derecha (segunda mitad del área izquierda)
             else {
+                console.log('Moving RIGHT');
+                keys['d'] = true;
                 keys['arrowright'] = true;
-                setTimeout(() => { keys['arrowright'] = false; }, 100);
+                setTimeout(() => { 
+                    keys['d'] = false; 
+                    keys['arrowright'] = false; 
+                }, 150);
             }
         }
-        // Área derecha para salto
-        else if (x > canvasWidth * 0.7) {
-            player.jump();
+        // Área derecha para salto (60% derecha del canvas)
+        else if (x > canvasWidth * 0.6) {
+            console.log('JUMPING');
+            if (player) {
+                player.jump();
+            }
         }
     }
 
@@ -1568,6 +1614,34 @@ class Game {
         powerUpInfo.forEach((info, index) => {
             ctx.fillText(info, 10, 90 + index * 20);
         });
+        
+        // Mostrar controles táctiles en móvil
+        if (isMobile) {
+            ctx.save();
+            ctx.globalAlpha = 0.3;
+            
+            // Área de movimiento izquierda
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, canvas.height - 150, canvas.width * 0.4, 150);
+            
+            // Línea divisoria en el área de movimiento
+            ctx.fillStyle = '#aaaaaa';
+            ctx.fillRect(canvas.width * 0.2 - 1, canvas.height - 150, 2, 150);
+            
+            // Área de salto derecha
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(canvas.width * 0.6, canvas.height - 150, canvas.width * 0.4, 150);
+            
+            ctx.restore();
+            
+            // Etiquetas
+            ctx.fillStyle = '#fff';
+            ctx.font = '14px Courier New';
+            ctx.textAlign = 'center';
+            ctx.fillText('⬅️', canvas.width * 0.1, canvas.height - 75);
+            ctx.fillText('➡️', canvas.width * 0.3, canvas.height - 75);
+            ctx.fillText('🚀', canvas.width * 0.8, canvas.height - 75);
+        }
     }
 
     static levelComplete() {
